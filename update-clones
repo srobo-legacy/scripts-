@@ -1,0 +1,6 @@
+#!/bin/bash
+
+for c in openembedded.git gedashield.git
+do
+	GIT_DIR=/srv/git/$c git fetch -q
+done

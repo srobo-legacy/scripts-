@@ -1,0 +1,18 @@
+#!/bin/bash
+
+if [[ "$1" == "" ]]
+   then
+   echo "Usage: create-repo NAME"
+   exit 1
+fi
+
+. git-funcs
+
+NAME=$1
+GIT_DIR=/srv/git/$NAME.git
+
+GIT_DIR=$GIT_DIR git init --shared 
+
+cd $GIT_DIR
+sort_config
+

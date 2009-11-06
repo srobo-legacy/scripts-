@@ -1,0 +1,9 @@
+#!/bin/bash
+
+. git-funcs
+
+find /srv/git -type d -name '*.git' -not -name '.git' | while read git_dir
+do
+    cd $git_dir
+    sort_config
+done

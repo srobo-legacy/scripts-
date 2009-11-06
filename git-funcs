@@ -1,0 +1,7 @@
+
+sort_config ()
+{
+    git config receive.denyNonFastForwards true
+    git --bare update-server-info
+    [ -f ./hooks/post-update.sample ] && mv hooks/post-update.sample hooks/post-update
+}
