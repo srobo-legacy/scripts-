@@ -3,6 +3,7 @@
 if [[ "$1" == "" ]]
    then
    echo "Usage: create-repo NAME"
+   echo "This is *not* for repository mirrors"
    exit 1
 fi
 
@@ -11,8 +12,14 @@ fi
 NAME=$1
 GIT_DIR=/srv/git/$NAME.git
 
-GIT_DIR=$GIT_DIR git init --shared 
+GIT_DIR=$GIT_DIR git init --shared=0x0664
 
 cd $GIT_DIR
-sort_config
+# Only admins get to change the config!
+chgrp -R git-admin config
 
+# Default hooks
+rm -rf hooks
+ln -s /srv/git/scripts/hooks hooks
+
+sort_config

@@ -1,0 +1,8 @@
+#!/bin/bash
+
+git --bare update-server-info
+
+repo=`pwd | sed -e 's#/srv/git/##'`
+
+echo "`date`: $repo updated by $USER" >> /srv/git/update-log
+
