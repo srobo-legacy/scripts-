@@ -1,7 +1,10 @@
 
 sort_config ()
 {
+    # Disallow non-fast-forward pushes
     git config receive.denyNonFastForwards true
+
+    # Update the gubbins for HTTP
     git --bare update-server-info
     [ -f ./hooks/post-update.sample ] && mv hooks/post-update.sample hooks/post-update
 }
