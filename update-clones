@@ -1,6 +1,8 @@
 #!/bin/bash
 
-for c in openembedded.git gedashield.git
+BASE=/srv/git/mirrors
+
+for c in $BASE/*.git
 do
-	GIT_DIR=/srv/git/$c git fetch -q
+    GIT_DIR=$c git fetch -q
 done
