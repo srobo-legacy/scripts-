@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# CIAbot munging:
+# refname=${1#refs/heads/}
+# [ "$refname" = "master" ] && refname=
+reponame=`pwd | sed -e 's#/srv/git/##' | sed -e 's#\.git$##'`
+refname=$reponame
+
+oldhead=$2
+newhead=$3
+for merged in $(git-rev-list $newhead ^$oldhead | tac); do
+        /srv/git/scripts/hooks/ciabot.pl $merged $refname               
+done                                         
