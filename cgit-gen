@@ -1,0 +1,18 @@
+#!/bin/bash
+BASE=/srv/git
+
+cat $BASE/scripts/conf/cgitrc-header
+
+cd $BASE
+
+# Find all git repositories
+find ./ -type d -regex '.*/[^/]+\.git' | while read name
+do
+    # Strip leading './'
+    NAME=${name:2}
+
+    echo "repo.url=$NAME"
+    echo "repo.path=$BASE/$NAME"
+    echo "repo.desc=`cat $BASE/$NAME/description`"
+    echo
+done

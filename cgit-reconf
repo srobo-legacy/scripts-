@@ -1,0 +1,3 @@
+#!/bin/bash
+
+/srv/git/scripts/cgit-gen > /etc/cgitrc
