@@ -15,9 +15,6 @@ GIT_DIR=/srv/git/$NAME.git
 GIT_DIR=$GIT_DIR git init --shared=0664
 
 cd $GIT_DIR
-# Only admins get to change the config!
-chgrp -R git-admin config
-
 # Default hooks
 rm -rf hooks
 ln -s /srv/git/scripts/hooks hooks

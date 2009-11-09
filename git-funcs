@@ -6,4 +6,7 @@ sort_config ()
 
     # Update the gubbins for HTTP
     git --bare update-server-info
+
+    # Only admins get to change the config!
+    chgrp git-admin config
 }
