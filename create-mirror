@@ -1,0 +1,27 @@
+#!/bin/bash
+
+if [[ "$1" == "" || "$2" == "" ]]
+   then
+   echo "Usage: create-mirror NAME URL"
+   echo "Creates a mirror of an existing repository."
+   echo "Gives the repository the name mirrors/NAME."
+   exit 1
+fi
+
+. git-funcs
+
+NAME=$1
+URL=$2
+
+GIT_DIR=/srv/git/mirrors/$NAME.git
+
+git clone --mirror $URL $GIT_DIR
+
+cd $GIT_DIR
+
+# Mirrors shouldn't be writable by committers
+chmod -R go-w .
+# Tell git that too
+git --bare config core.sharedRepository 0644
+
+sort_config
