@@ -11,6 +11,7 @@ fi
 
 NAME=$1
 GIT_DIR=/srv/git/$NAME.git
+mkdir -p $GIT_DIR
 
 GIT_DIR=$GIT_DIR git init --shared=0664
 
