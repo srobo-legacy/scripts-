@@ -8,6 +8,6 @@ refname=$reponame
 
 oldhead=$2
 newhead=$3
-for merged in $(git-rev-list $newhead ^$oldhead | tac); do
+for merged in $(git rev-list $newhead ^$oldhead | tac); do
         /srv/git/scripts/hooks/ciabot.pl $merged $refname               
 done                                         

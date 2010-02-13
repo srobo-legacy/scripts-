@@ -109,7 +109,7 @@ my $line;
 $commit = $ARGV[0];
 $branch = $ARGV[1];
 
-open COMMIT, "git-cat-file commit $commit|" or die "git-cat-file commit $commit: $!";
+open COMMIT, "git cat-file commit $commit|" or die "git cat-file commit $commit: $!";
 my $state = 0;
 $logmsg = '';
 while (defined ($line = <COMMIT>)) {
@@ -141,7 +141,7 @@ while (defined ($line = <COMMIT>)) {
 close COMMIT;
 
 
-open DIFF, "git-diff-tree -r $parent[0] $tree|" or die "git-diff-tree $parent[0] $tree: $!";
+open DIFF, "git diff-tree -r $parent[0] $tree|" or die "git diff-tree $parent[0] $tree: $!";
 while (defined ($line = <DIFF>)) {
   chomp $line;
   my @f;
