@@ -5,7 +5,7 @@
 cache-size=1000
 
 # Specify some default clone prefixes
-clone-prefix=ssh://srobo.org/srv/git http://www.studentrobotics.org/git
+clone-prefix=ssh://srobo.org/srv/git https://www.studentrobotics.org/git git://srobo.org
 
 # Specify the css url
 css=/cgit-data/cgit.css
