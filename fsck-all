@@ -1,0 +1,12 @@
+#!/bin/bash
+
+echo fsck\'ing all git repos...
+
+find /srv/git -type d -name '*.git' -not -name '.git' | while read git_dir
+do
+    echo Checking $git_dir
+    cd $git_dir
+    git fsck
+done
+
+echo All done.
