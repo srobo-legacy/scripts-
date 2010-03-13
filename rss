@@ -49,6 +49,22 @@ def get_repo_cgit_url(c):
     "Get the cgit URL for the repo of the given commit"
     return "https://www.studentrobotics.org/cgit/%s" % commit_get_repo(c)
 
+def create_diffstat(c):
+    "Return HTML string containing a diffstat of the given commit."
+    stat = c.stats.files
+
+    s = "<pre>"
+    s += "%i file(s) affected:\n" % len(stat)
+
+    for fname, changes in stat.iteritems():
+        s += """%(insertions)i+/%(deletions)i-: %(fname)s\n""" % {
+            "fname": fname,
+            "insertions": changes["insertions"],
+            "deletions": changes["deletions"] }
+
+    s += "</pre>"
+    return s
+
 commits = []
 
 for repodir in list_repos():
@@ -77,12 +93,15 @@ for commit in commits:
              "title": msg }
 
     desc = """<p>Commit <b><a href="%(commiturl)s">%(hash)s</a></b> to <a href="%(repourl)s">%(reponame)s</a> by %(user)s.</p>
-<pre>%(msg)s</pre>""" % { "commiturl": get_commit_url(commit),
-                          "repourl": get_repo_cgit_url(commit),
-                          "hash": commit.id,
-                          "reponame": commit_get_repo(commit),
-                          "user": commit.author,
-                          "msg" : commit.message }
+<pre>%(msg)s</pre>
+%(diffstat)s
+""" % { "commiturl": get_commit_url(commit),
+        "repourl": get_repo_cgit_url(commit),
+        "hash": commit.id,
+        "reponame": commit_get_repo(commit),
+        "user": commit.author,
+        "msg" : commit.message,
+        "diffstat" : create_diffstat(commit) }
                           
     item = pyrss.RSSItem(
         title = "%(repo)s - %(author)s: %(title)s" % data,
