@@ -31,6 +31,8 @@ root-title=Student Robotics Git Repository Browser
 # Set a subheading for the repository index page
 root-desc=
 
+header=/srv/git/scripts/conf/cgit-header
+
 # Include some more info about this site on the index page
 #root-readme=/var/www/html/about.html
 
