@@ -1,8 +1,6 @@
 #!/bin/bash
 
 # CIAbot munging:
-# refname=${1#refs/heads/}
-# [ "$refname" = "master" ] && refname=
 reponame=`pwd | sed -e 's#/srv/git/##' | sed -e 's#\.git$##'`
 refname=$reponame
 
