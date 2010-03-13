@@ -85,7 +85,7 @@ for commit in commits:
                           "msg" : commit.message }
                           
     item = pyrss.RSSItem(
-        title = "%(repo)s: %(author)s %(hash)s: %(title)s" % data,
+        title = "%(repo)s - %(author)s: %(title)s" % data,
         link = get_commit_url( commit ),
         description = desc,
 
