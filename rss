@@ -1,0 +1,116 @@
+#!/usr/bin/env python
+import git, os, datetime, tempfile, stat
+import PyRSS2Gen as pyrss
+
+NUM_POSTS = 100
+RSS_PATH = "/srv/git/commits.rss"
+
+# Ignore repositories with paths beginning like this: 
+IGNORE = [ "/srv/git/mirrors/", "/srv/git/scripts/" ]
+
+def list_repos():
+    "Generate the paths of all the repositories"
+    for root, dirs, files in os.walk("/srv/git"):
+        if root[-4:] == ".git":
+
+            skip = False
+            for i in IGNORE:
+                if root[0:len(i)] == i:
+                    skip = True
+                    break
+
+            if skip:
+                continue
+
+            yield root
+
+def commit_date_compare(x,y):
+    if x.committed_date > y.committed_date:
+        return -1
+
+    if x.committed_date == y.committed_date:
+        return 0
+
+    if x.committed_date < y.committed_date:
+        return 1
+
+def commit_get_repo(c):
+    "Give the shortname for the repository that the given commit is in"
+    path = c.repo.path
+    prefix = "/srv/git/"
+    return path[len(prefix):]
+
+def get_commit_url(c):
+    "Get the cgit URL for the given commit"
+    name = commit_get_repo(c)
+    return "https://www.studentrobotics.org/cgit/%s/commit/?id=%s" % (name, c.id)
+
+def get_repo_cgit_url(c):
+    "Get the cgit URL for the repo of the given commit"
+    return "https://www.studentrobotics.org/cgit/%s" % commit_get_repo(c)
+
+commits = []
+
+for repodir in list_repos():
+    repo = git.Repo(repodir)
+    commits += repo.commits(max_count = NUM_POSTS)
+
+    # Sort the list
+    commits.sort( cmp = commit_date_compare )
+
+    # Truncate
+    commits = commits[:NUM_POSTS]
+
+items = []
+for commit in commits:
+    # Truncate the commit message to create the first line
+    msg = commit.message
+    nl = msg.find("\n")
+    if nl != -1:
+        msg = msg[:nl]
+    msg = msg[:80]
+
+    data = { "author": commit.author,
+             "repo": commit_get_repo( commit ),
+             "hash": commit.id[0:12],
+             # First line of the commit message, truncated to 80 chars
+             "title": msg }
+
+    desc = """<p>Commit <b><a href="%(commiturl)s">%(hash)s</a></b> to <a href="%(repourl)s">%(reponame)s</a> by %(user)s.</p>
+<pre>%(msg)s</pre>""" % { "commiturl": get_commit_url(commit),
+                          "repourl": get_repo_cgit_url(commit),
+                          "hash": commit.id,
+                          "reponame": commit_get_repo(commit),
+                          "user": commit.author,
+                          "msg" : commit.message }
+                          
+    item = pyrss.RSSItem(
+        title = "%(repo)s: %(author)s %(hash)s: %(title)s" % data,
+        link = get_commit_url( commit ),
+        description = desc,
+
+        # Convert the time.struct_time to a datetime
+        pubDate = datetime.datetime( *commit.committed_date[:6] ),
+
+        guid = pyrss.Guid( get_commit_url(commit) ) )
+
+    items.append(item)
+
+rss = pyrss.RSS2(
+    title = "Student Robotics Git Commits",
+    link = "http://git.studentrobotics.org/",
+    description = "The latest %i commits to the Student Robotics Repositories" % NUM_POSTS,
+    lastBuildDate = datetime.datetime.now(),
+    items = items )
+
+tmpfd, tmp = tempfile.mkstemp()
+tmpf = os.fdopen( tmpfd, "w" )
+rss.write_xml( tmpf )
+
+os.fchmod(tmpfd, stat.S_IRUSR | stat.S_IRGRP | stat.S_IROTH)
+
+tmpf.close()
+
+os.rename( tmp, RSS_PATH )
+
+
