@@ -99,7 +99,7 @@ for commit in commits:
 rss = pyrss.RSS2(
     title = "Student Robotics Git Commits",
     link = "http://git.studentrobotics.org/",
-    description = "The latest %i commits to the Student Robotics Repositories" % NUM_POSTS,
+    description = "The last %i commits to the Student Robotics Repositories" % NUM_POSTS,
     lastBuildDate = datetime.datetime.now(),
     items = items )
 
