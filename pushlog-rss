@@ -1,0 +1,70 @@
+#!/usr/bin/env python
+import git, mmap, datetime
+import PyRSS2Gen as pyrss
+
+NUM_POSTS = 100
+
+def lines_rev(f):
+    "Generator to go through lines in file in reverse order"
+
+    # Map the whole file
+    m = mmap.mmap( f.fileno(), 0, access = mmap.ACCESS_READ )
+
+    last = len(m)
+    p = m.rfind("\n")
+
+    while p not in [-1]:
+        yield m[p:last]
+
+        last = p
+        p = m.rfind("\n", 0, p)
+
+    m.close()
+
+def count_commits(path, hasha, hashb):
+    repo = git.Repo( path )
+    commits = repo.commits( "%s...%s" % (hasha, hashb) )
+    return len(commits)
+
+def get_repo_url(path):
+    name = path[len("/srv/git/"):]
+    return "https://www.studentrobotics.org/cgit/%s" % (name)
+
+items = []
+
+f = open("/srv/git/push-log", "r")
+
+for l in lines_rev(f):
+    l = l.strip()
+    if l == "":
+        continue
+
+    timestamp, user, path, hasha, hashb = l.split()
+
+    data = { "user": user,
+             "num_commits": count_commits( path, hasha, hashb ),
+             "repo": path[len("/srv/git/"):],
+             "repo_url": get_repo_url(path) }
+
+    cstr = "commit"
+    if data["num_commits"] > 1:
+        cstr += "s"
+    data["cstr"] = cstr
+
+    item = pyrss.RSSItem(
+        title = "%(repo)s: %(num_commits)i %(cstr)s pushed by %(user)s" % data,
+
+        description = """%(user)s pushed %(num_commits)i %(cstr)s to <a href="%(repo_url)s">%(repo)s</a>.""" % data,
+
+        pubDate = datetime.datetime.fromtimestamp(int(timestamp)) )
+
+    items.append( item )
+
+rss = pyrss.RSS2(
+    title = "Student Robotics Git Pushes",
+    link = "http://git.studentrobotics.org/",
+    description = "The last %i pushes to the Student Robotics git repositories." % NUM_POSTS,
+    lastBuildDate = datetime.datetime.now(),
+    items = items )
+
+rss.write_xml( open("/srv/git/pushes.rss", "w") )

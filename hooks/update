@@ -13,3 +13,6 @@ for merged in $(git rev-list $newhead ^$oldhead | tac); do
                 exit 0
         fi
 done                                         
+
+echo `date +%s` $USER `pwd` $oldhead $newhead >> /srv/git/push-log
+
