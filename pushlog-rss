@@ -56,7 +56,8 @@ for l in lines_rev(f):
 
         description = """%(user)s pushed %(num_commits)i %(cstr)s to <a href="%(repo_url)s">%(repo)s</a>.""" % data,
 
-        pubDate = datetime.datetime.fromtimestamp(int(timestamp)) )
+        pubDate = datetime.datetime.fromtimestamp(int(timestamp)),
+        guid = pyrss.Guid( l ) )
 
     items.append( item )
 
