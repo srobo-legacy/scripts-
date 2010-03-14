@@ -1,1 +1,2 @@
-<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="https://www.studentrobotics.org/git/commits.rss" />
+<link rel="alternate" type="application/rss+xml" title="All commits (RSS 2.0)" href="https://www.studentrobotics.org/git/commits.rss" />
+<link rel="alternate" type="application/rss+xml" title="Pushes (RSS 2.0)" href="https://www.studentrobotics.org/git/pushes.rss" />
