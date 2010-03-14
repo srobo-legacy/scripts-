@@ -23,7 +23,12 @@ def lines_rev(f):
 
 def count_commits(path, hasha, hashb):
     repo = git.Repo( path )
-    commits = repo.commits( "%s...%s" % (hasha, hashb) )
+
+    if hasha == "0000000000000000000000000000000000000000":
+        commits = repo.commits( "%s" % hashb )
+    else:
+        commits = repo.commits( "%s...%s" % (hasha, hashb) )
+
     return len(commits)
 
 def get_repo_url(path):
