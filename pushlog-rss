@@ -24,10 +24,13 @@ def lines_rev(f):
 def count_commits(path, hasha, hashb):
     repo = git.Repo( path )
 
-    if hasha == "0000000000000000000000000000000000000000":
-        commits = repo.commits( "%s" % hashb )
-    else:
-        commits = repo.commits( "%s...%s" % (hasha, hashb) )
+    try:
+        if hasha == "0000000000000000000000000000000000000000":
+            commits = repo.commits( "%s" % hashb )
+        else:
+            commits = repo.commits( "%s...%s" % (hasha, hashb) )
+    except git.errors.GitCommandError:
+        commits = []
 
     return len(commits)
 
