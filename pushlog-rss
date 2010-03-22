@@ -22,7 +22,10 @@ def lines_rev(f):
     m.close()
 
 def count_commits(path, hasha, hashb):
-    repo = git.Repo( path )
+    try:
+        repo = git.Repo( path )
+    except git.errors.NoSuchPathError:
+        return 0
 
     try:
         if hasha == "0000000000000000000000000000000000000000":
@@ -49,8 +52,13 @@ for l in lines_rev(f):
 
     timestamp, user, path, hasha, hashb = l.split()
 
+    n_commits = count_commits( path, hasha, hashb )
+    if n_commits == 0:
+        "Skip this item"
+        continue
+
     data = { "user": user,
-             "num_commits": count_commits( path, hasha, hashb ),
+             "num_commits": n_commits,
              "repo": path[len("/srv/git/"):],
              "repo_url": get_repo_url(path) }
 
