@@ -5,6 +5,6 @@ BASE=/srv/git/mirrors
 for c in $BASE/*.git
 do
     cd $c
-    GIT_DIR=. git fetch -t -q
+    GIT_DIR=. git fetch -q
     git --bare update-server-info
 done
