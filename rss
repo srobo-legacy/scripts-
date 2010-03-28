@@ -69,13 +69,16 @@ commits = []
 
 for repodir in list_repos():
     repo = git.Repo(repodir)
-    commits += repo.commits(max_count = NUM_POSTS)
 
-    # Sort the list
-    commits.sort( cmp = commit_date_compare )
+    for branch in repo.branches:
+        commits += repo.commits( start = branch.name,
+                                 max_count = NUM_POSTS )
 
-    # Truncate
-    commits = commits[:NUM_POSTS]
+        # Sort the list
+        commits.sort( cmp = commit_date_compare )
+
+        # Truncate
+        commits = commits[:NUM_POSTS]
 
 items = []
 for commit in commits:
