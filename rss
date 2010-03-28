@@ -49,6 +49,9 @@ def get_repo_cgit_url(c):
     "Get the cgit URL for the repo of the given commit"
     return "https://www.studentrobotics.org/cgit/%s" % commit_get_repo(c)
 
+def sanitise_str(s):
+    return unicode( s, "utf-8").encode( "ascii", "backslashreplace" )
+
 def create_diffstat(c):
     "Return HTML string containing a diffstat of the given commit."
     stat = c.stats.files
@@ -89,7 +92,7 @@ for commit in commits:
         msg = msg[:nl]
     msg = msg[:80]
 
-    data = { "author": commit.author,
+    data = { "author": sanitise_str(commit.author.name),
              "repo": commit_get_repo( commit ),
              "hash": commit.id[0:12],
              # First line of the commit message, truncated to 80 chars
@@ -102,8 +105,8 @@ for commit in commits:
         "repourl": get_repo_cgit_url(commit),
         "hash": commit.id,
         "reponame": commit_get_repo(commit),
-        "user": commit.author,
-        "msg" : commit.message,
+        "user": sanitise_str(commit.author.name),
+        "msg" : sanitise_str( commit.message ),
         "diffstat" : create_diffstat(commit) }
                           
     item = pyrss.RSSItem(
