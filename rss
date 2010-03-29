@@ -76,12 +76,28 @@ def create_diffstat(c):
     s += "</pre>"
     return s
 
+def get_ignore_list(repodir):
+    igpath = os.path.join( repodir, "rss-branch-ignore" )
+
+    if os.path.exists(igpath):
+        f = open( igpath, "r" )
+        ig = [x.strip() for x in f.readlines()]
+        f.close()
+        return ig
+
+    return []
+
 commits = []
 
 for repodir in list_repos():
     repo = git.Repo(repodir)
+    iglist = get_ignore_list(repodir)
 
     for branch in repo.branches:
+        if branch.name in iglist:
+            "Skip branches in the ignore list"
+            continue
+
         commits += [ (branch.name, x) for x in  repo.commits( start = branch.name,
                                                               max_count = NUM_POSTS ) ]
 
