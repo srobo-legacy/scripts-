@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import git, os, datetime, tempfile, stat
+import git, os, datetime, tempfile, stat, sys
 import PyRSS2Gen as pyrss
 
 NUM_POSTS = 100
@@ -7,6 +7,11 @@ RSS_PATH = "/srv/git/commits.rss"
 
 # Ignore repositories with paths beginning like this: 
 IGNORE = [ "/srv/git/mirrors/", "/srv/git/scripts/" ]
+
+DEBUG = len(sys.argv) > 1
+if DEBUG:
+    print "Debug mode"
+    RSS_PATH = "/srv/git/commits-test.rss"
 
 def list_repos():
     "Generate the paths of all the repositories"
@@ -25,6 +30,9 @@ def list_repos():
             yield root
 
 def commit_date_compare(x,y):
+    x = x[1]
+    y = y[1]
+
     if x.committed_date > y.committed_date:
         return -1
 
@@ -74,8 +82,8 @@ for repodir in list_repos():
     repo = git.Repo(repodir)
 
     for branch in repo.branches:
-        commits += repo.commits( start = branch.name,
-                                 max_count = NUM_POSTS )
+        commits += [ (branch.name, x) for x in  repo.commits( start = branch.name,
+                                                              max_count = NUM_POSTS ) ]
 
         # Sort the list
         commits.sort( cmp = commit_date_compare )
@@ -84,7 +92,7 @@ for repodir in list_repos():
         commits = commits[:NUM_POSTS]
 
 items = []
-for commit in commits:
+for branch, commit in commits:
     # Truncate the commit message to create the first line
     msg = commit.message
     nl = msg.find("\n")
@@ -96,7 +104,8 @@ for commit in commits:
              "repo": commit_get_repo( commit ),
              "hash": commit.id[0:12],
              # First line of the commit message, truncated to 80 chars
-             "title": msg }
+             "title": msg,
+             "branch" : branch }
 
     desc = """<p>Commit <b><a href="%(commiturl)s">%(hash)s</a></b> to <a href="%(repourl)s">%(reponame)s</a> by %(user)s.</p>
 <pre>%(msg)s</pre>
@@ -110,7 +119,7 @@ for commit in commits:
         "diffstat" : create_diffstat(commit) }
                           
     item = pyrss.RSSItem(
-        title = "%(repo)s - %(author)s: %(title)s" % data,
+        title = "%(repo)s(%(branch)s) - %(author)s: %(title)s" % data,
         link = get_commit_url( commit ),
         description = desc,
 
