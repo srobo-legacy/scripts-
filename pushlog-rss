@@ -82,6 +82,9 @@ for l in lines_rev(f):
 
     items.append( item )
 
+    if len(items) == NUM_POSTS:
+        break
+
 rss = pyrss.RSS2(
     title = "Student Robotics Git Pushes",
     link = "http://git.studentrobotics.org/",
