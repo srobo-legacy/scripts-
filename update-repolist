@@ -1,0 +1,13 @@
+#!/bin/bash
+
+cd /srv/git
+find -name '*.git' -type d  | sort | 
+grep -v 'scripts/.git' |
+while read repodir
+do
+    reponame=`echo $repodir | sed -e 's#^\./##'`
+    repodesc=`cat $repodir/description`
+
+    echo $reponame: $repodesc
+done > /srv/git/repolist
+
