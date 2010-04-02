@@ -3,6 +3,11 @@ import git, mmap, datetime
 import PyRSS2Gen as pyrss
 
 NUM_POSTS = 100
+DEBUG = True
+
+RSS_FILE = "/srv/git/pushes.rss"
+if DEBUG:
+    RSS_FILE = "/srv/git/pushes-test.rss"
 
 def lines_rev(f):
     "Generator to go through lines in file in reverse order"
@@ -84,4 +89,4 @@ rss = pyrss.RSS2(
     lastBuildDate = datetime.datetime.now(),
     items = items )
 
-rss.write_xml( open("/srv/git/pushes.rss", "w") )
+rss.write_xml( open( RSS_FILE , "w") )
