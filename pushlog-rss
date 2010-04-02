@@ -46,6 +46,31 @@ def get_repo_url(path):
     name = path[len("/srv/git/"):]
     return "https://www.studentrobotics.org/cgit/%s" % (name)
 
+def get_shortlog( path, hasha, hashb ):
+    try:
+        repo = git.Repo( path )
+    except git.errors.NoSuchPathError:
+        return ""
+
+    try:
+        commits = repo.commits( "%s...%s" % (hasha, hashb) )
+    except git.errors.GitCommandError:
+        return ""
+
+    s = "<pre>"
+    for commit in commits:
+        msg = commit.message
+        nl = msg.find("\n")
+        if nl != -1:
+            msg = msg[:nl]
+        msg = msg[:80]
+
+        s += "%(author)s: %(summary)s\n" % { "author" : commit.author.name, "summary": msg }
+
+    s += "</pre>"
+
+    return s
+
 items = []
 
 f = open("/srv/git/push-log", "r")
@@ -65,7 +90,8 @@ for l in lines_rev(f):
     data = { "user": user,
              "num_commits": n_commits,
              "repo": path[len("/srv/git/"):],
-             "repo_url": get_repo_url(path) }
+             "repo_url": get_repo_url(path),
+             "shortlog": get_shortlog( path, hasha, hashb ) }
 
     cstr = "commit"
     if data["num_commits"] > 1:
@@ -75,7 +101,7 @@ for l in lines_rev(f):
     item = pyrss.RSSItem(
         title = "%(repo)s: %(num_commits)i %(cstr)s pushed by %(user)s" % data,
 
-        description = """%(user)s pushed %(num_commits)i %(cstr)s to <a href="%(repo_url)s">%(repo)s</a>.""" % data,
+        description = """%(user)s pushed %(num_commits)i %(cstr)s to <a href="%(repo_url)s">%(repo)s</a>:<br/>%(shortlog)s\n""" % data,
 
         pubDate = datetime.datetime.fromtimestamp(int(timestamp)),
         guid = pyrss.Guid( l ) )
