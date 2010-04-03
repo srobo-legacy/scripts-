@@ -12,4 +12,7 @@ sort_config ()
 
     # Regenerate the cgit config
     /srv/git/scripts/cgit-reconf
+
+    # Update the list of repositories
+    /srv/git/scripts/update-repolist
 }
