@@ -1,18 +1,44 @@
 #!/bin/bash
 BASE=/srv/git
 
+function printrepo () {
+    echo "repo.url=$1"
+    echo "repo.path=$BASE/$1"
+    echo "repo.desc=`cat $BASE/$1/description`"
+    echo
+}
+
 cat $BASE/scripts/conf/cgitrc-header
 
 cd $BASE
 
 # Find all git repositories
-find ./ -type d -regex '.*/[^/]+\.git' | while read name
-do
-    # Strip leading './'
-    NAME=${name:2}
+NAMES=$(find ./ -type d -regex '.*/[^/]+\.git' | sed -e 's/\.\/\(.*\)/\1/')
+# Find all git repository groups
+GRPS=$(for N in $NAMES; do cat $N/group 2> /dev/null; done | sort | uniq)
 
-    echo "repo.url=$NAME"
-    echo "repo.path=$BASE/$NAME"
-    echo "repo.desc=`cat $BASE/$NAME/description`"
+# Handle repositories without a group file/empty file first
+# as no repo.group is set
+for N in $NAMES
+do
+    # File doesn't exist or is empty
+    if [[ ! -r $BASE/$N/group || ! -s $BASE/$N/group ]]; then
+        printrepo $N
+    fi
+done
+echo
+
+# Output repositories grouped together
+for G in $GRPS
+do
+    echo "repo.group=$G"
+
+    for N in $NAMES
+    do
+        if [[ -r $BASE/$N/group && $(cat $BASE/$N/group) == $G ]]; then
+            printrepo $N
+        fi
+    done
+
     echo
 done
