@@ -15,7 +15,13 @@ cd $BASE
 # Find all git repositories
 NAMES=$(find ./ -type d -regex '.*/[^/]+\.git' | sed -e 's/\.\/\(.*\)/\1/')
 # Find all git repository groups
-GRPS=$(for N in $NAMES; do cat $N/group 2> /dev/null; done | sort | uniq)
+# Store old IFS and change it to new lines only. This means that groups cannot
+# contain new line chars.
+OLDIFS=$IFS
+IFS=$'\n'
+# Note the () around the sub-command, makes GPRS an array
+GRPS=($(for N in $NAMES; do cat $N/group 2> /dev/null; done | sort | uniq))
+IFS=$OLDIFS
 
 # Handle repositories without a group file/empty file first
 # as no repo.group is set
@@ -29,7 +35,7 @@ done
 echo
 
 # Output repositories grouped together
-for G in $GRPS
+for G in "${GRPS[@]}"
 do
     echo "repo.group=$G"
 
