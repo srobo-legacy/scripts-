@@ -3,7 +3,7 @@ import git, mmap, datetime
 import PyRSS2Gen as pyrss
 
 NUM_POSTS = 100
-DEBUG = True
+DEBUG = False
 
 RSS_FILE = "/srv/git/pushes.rss"
 if DEBUG:
@@ -46,6 +46,17 @@ def get_repo_url(path):
     name = path[len("/srv/git/"):]
     return "https://www.studentrobotics.org/cgit/%s" % (name)
 
+def commit_get_repo(c):
+    "Give the shortname for the repository that the given commit is in"
+    path = c.repo.path
+    prefix = "/srv/git/"
+    return path[len(prefix):]
+
+def get_commit_url(c):
+    "Get the cgit URL for the given commit"
+    name = commit_get_repo(c)
+    return "https://www.studentrobotics.org/cgit/%s/commit/?id=%s" % (name, c.id)
+
 def get_shortlog( path, hasha, hashb ):
     try:
         repo = git.Repo( path )
@@ -57,7 +68,7 @@ def get_shortlog( path, hasha, hashb ):
     except git.errors.GitCommandError:
         return ""
 
-    s = "<pre>"
+    s = "<p>"
     for commit in commits:
         msg = commit.message
         nl = msg.find("\n")
@@ -65,9 +76,12 @@ def get_shortlog( path, hasha, hashb ):
             msg = msg[:nl]
         msg = msg[:80]
 
-        s += "%(author)s: %(summary)s\n" % { "author" : commit.author.name, "summary": msg }
+        s += """%(author)s: <a href="%(url)s">%(summary)s</a>\n<br/>""" % \
+            { "author" : commit.author.name,
+              "summary": msg,
+              "url" : get_commit_url(commit) }
 
-    s += "</pre>"
+    s += "</p>"
 
     return s
 
