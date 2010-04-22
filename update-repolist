@@ -1,5 +1,8 @@
 #!/bin/bash
 
+. git-funcs
+check_not_root
+
 cd /srv/git
 find -name '*.git' -type d  | sort | 
 grep -v 'scripts/.git' |

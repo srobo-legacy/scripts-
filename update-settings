@@ -1,6 +1,7 @@
 #!/bin/bash
 
 . git-funcs
+check_not_root
 
 find /srv/git -type d -name '*.git' -not -name '.git' | while read git_dir
 do

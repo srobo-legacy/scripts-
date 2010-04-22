@@ -8,6 +8,7 @@ if [[ "$1" == "" ]]
 fi
 
 . git-funcs
+check_not_root
 
 NAME=$1
 GIT_DIR=/srv/git/$NAME.git

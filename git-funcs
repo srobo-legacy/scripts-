@@ -16,3 +16,12 @@ sort_config ()
     # Update the list of repositories
     /srv/git/scripts/update-repolist
 }
+
+check_not_root ()
+{
+	if [[ "$UID" == "0" ]]
+	    then
+	    echo "Don't run this as root!  Aborting."
+	    exit 1
+	fi
+}

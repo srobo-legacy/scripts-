@@ -9,6 +9,7 @@ if [[ "$1" == "" || "$2" == "" ]]
 fi
 
 . git-funcs
+check_not_root
 
 NAME=$1
 URL=$2
