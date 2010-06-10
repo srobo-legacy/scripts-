@@ -1,5 +1,6 @@
 #!/bin/bash
 
+cd /srv/git/scripts
 . git-funcs
 check_not_root
 
