@@ -44,14 +44,14 @@ def commit_date_compare(x,y):
 
 def commit_get_repo(c):
     "Give the shortname for the repository that the given commit is in"
-    path = c.repo.path
+    path = c.repo.working_dir
     prefix = "/srv/git/"
     return path[len(prefix):]
 
 def get_commit_url(c):
     "Get the cgit URL for the given commit"
     name = commit_get_repo(c)
-    return "https://www.studentrobotics.org/cgit/%s/commit/?id=%s" % (name, c.id)
+    return "https://www.studentrobotics.org/cgit/%s/commit/?id=%s" % (name, c.sha)
 
 def get_repo_cgit_url(c):
     "Get the cgit URL for the repo of the given commit"
@@ -98,8 +98,10 @@ for repodir in list_repos():
             "Skip branches in the ignore list"
             continue
 
-        commits += [ (branch.name, x) for x in  repo.commits( start = branch.name,
-                                                              max_count = NUM_POSTS ) ]
+        commits += [ (branch.name, x) for x in repo.iter_commits( branch.name,
+                                                                  max_count = NUM_POSTS ) ]
+
+        print len(list(repo.iter_commits(branch.name, max_count = NUM_POSTS)))
 
         # Sort the list
         commits.sort( cmp = commit_date_compare )
@@ -118,7 +120,7 @@ for branch, commit in commits:
 
     data = { "author": sanitise_str(commit.author.name),
              "repo": commit_get_repo( commit ),
-             "hash": commit.id[0:12],
+             "hash": commit.sha[0:12],
              # First line of the commit message, truncated to 80 chars
              "title": msg,
              "branch" : branch }
@@ -128,7 +130,7 @@ for branch, commit in commits:
 %(diffstat)s
 """ % { "commiturl": get_commit_url(commit),
         "repourl": get_repo_cgit_url(commit),
-        "hash": commit.id,
+        "hash": commit.sha,
         "reponame": commit_get_repo(commit),
         "user": sanitise_str(commit.author.name),
         "msg" : sanitise_str( commit.message ),
@@ -140,7 +142,7 @@ for branch, commit in commits:
         description = desc,
 
         # Convert the time.struct_time to a datetime
-        pubDate = datetime.datetime( *commit.committed_date[:6] ),
+        pubDate = datetime.datetime.fromtimestamp( commit.committed_date ),
 
         guid = pyrss.Guid( get_commit_url(commit) ) )
 
