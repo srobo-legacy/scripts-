@@ -11,6 +11,12 @@ fi
 check_not_root
 
 NAME=$1
+if [[ "${NAME: -4}" == ".git" ]]
+    then
+    echo "Error: Provide the repository name without '.git' on the end."
+    exit 1
+fi
+
 GIT_DIR=/srv/git/$NAME.git
 mkdir -p $GIT_DIR
 
