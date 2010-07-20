@@ -34,9 +34,9 @@ def count_commits(path, hasha, hashb):
 
     try:
         if hasha == "0000000000000000000000000000000000000000":
-            commits = repo.commits( "%s" % hashb )
+            commits = list( repo.iter_commits( "%s" % hashb ) )
         else:
-            commits = repo.commits( "%s...%s" % (hasha, hashb) )
+            commits = list( repo.iter_commits( "%s...%s" % (hasha, hashb) ) )
     except git.errors.GitCommandError:
         commits = []
 
@@ -48,14 +48,14 @@ def get_repo_url(path):
 
 def commit_get_repo(c):
     "Give the shortname for the repository that the given commit is in"
-    path = c.repo.path
+    path = c.repo.working_dir
     prefix = "/srv/git/"
     return path[len(prefix):]
 
 def get_commit_url(c):
     "Get the cgit URL for the given commit"
     name = commit_get_repo(c)
-    return "https://www.studentrobotics.org/cgit/%s/commit/?id=%s" % (name, c.id)
+    return "https://www.studentrobotics.org/cgit/%s/commit/?id=%s" % (name, c.sha)
 
 def get_shortlog( path, hasha, hashb ):
     try:
@@ -64,7 +64,7 @@ def get_shortlog( path, hasha, hashb ):
         return ""
 
     try:
-        commits = repo.commits( "%s...%s" % (hasha, hashb) )
+        commits = list( repo.iter_commits( "%s...%s" % (hasha, hashb) ) )
     except git.errors.GitCommandError:
         return ""
 
