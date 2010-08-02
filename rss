@@ -101,8 +101,6 @@ for repodir in list_repos():
         commits += [ (branch.name, x) for x in repo.iter_commits( branch.name,
                                                                   max_count = NUM_POSTS ) ]
 
-        print len(list(repo.iter_commits(branch.name, max_count = NUM_POSTS)))
-
         # Sort the list
         commits.sort( cmp = commit_date_compare )
 
