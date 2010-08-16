@@ -13,7 +13,7 @@ function printuserrepo () {
     echo "repo.url=$2/$1"
     echo "repo.path=$REPOPATH"
     echo "repo.desc=$(cat $REPOPATH/description 2> /dev/null)"
-    echo "repo.clone-prefix=git://srobo.org/~$2"
+    echo "repo.clone-url=git://srobo.org/~$2/$1"
     echo
 }
 
