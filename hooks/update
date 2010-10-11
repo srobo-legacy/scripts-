@@ -5,13 +5,23 @@ reponame=`pwd | sed -e 's#/srv/git/##' | sed -e 's#\.git$##'`
 refname=$reponame
 
 oldhead=$2
+if [[ "$oldhead" == "0000000000000000000000000000000000000000" ]]
+    then
+    _oldhead=""
+else
+    _oldhead="^$oldhead"
+fi
+
 newhead=$3
-for merged in $(git rev-list --no-merges $newhead ^$oldhead | tac); do
-        /srv/git/scripts/hooks/ciabot.pl $merged $refname               
-        if test $? = 110; then
+for merged in $(git rev-list --no-merges $newhead $_oldhead | tac); do
+	if [[ "`git branch --contains $merged`" == "" ]]
+	    then
+            /srv/git/scripts/hooks/ciabot.pl $merged $refname
+            if test $? = 110; then
                 echo "CIA.vc timed out; bees"
                 exit 0
-        fi
+            fi
+	fi
 done                                         
 
 echo `date +%s` $USER `pwd` $oldhead $newhead >> /srv/git/push-log
