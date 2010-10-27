@@ -28,3 +28,5 @@ rm -rf hooks
 ln -s /srv/git/scripts/hooks hooks
 
 sort_config
+
+echo "$USER created a new git repository: ${NAME}.git" > /tmp/hash-srobo
