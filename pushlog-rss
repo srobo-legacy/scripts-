@@ -94,7 +94,12 @@ for l in lines_rev(f):
     if l == "":
         continue
 
-    timestamp, user, path, hasha, hashb = l.split()
+    t = l.split()
+    if len(t) < 5:
+        "Skip this entry."
+        continue
+
+    timestamp, user, path, hasha, hashb = t
 
     n_commits = count_commits( path, hasha, hashb )
     if n_commits == 0:
