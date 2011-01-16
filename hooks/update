@@ -12,17 +12,21 @@ else
     _oldhead="^$oldhead"
 fi
 
-newhead=$3
-for merged in $(git rev-list --no-merges $newhead $_oldhead | tac); do
+# Create this file to disable CIA notifications (for massive pushes etc)
+if [ ! -e /srv/git/disable-cia ]
+    then
+    newhead=$3
+    for merged in $(git rev-list --no-merges $newhead $_oldhead | tac); do
 	if [[ "`git branch --contains $merged`" == "" ]]
-	    then
+	then
             /srv/git/scripts/hooks/ciabot.pl $merged $refname
             if test $? = 110; then
                 echo "CIA.vc timed out; bees"
                 exit 0
             fi
 	fi
-done                                         
+    done
+fi
 
 echo `date +%s` $USER `pwd` $oldhead $newhead >> /srv/git/push-log
 
