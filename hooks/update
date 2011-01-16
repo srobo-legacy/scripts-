@@ -13,7 +13,7 @@ else
 fi
 
 # Create this file to disable CIA notifications (for massive pushes etc)
-if [ ! -e /srv/git/disable-cia ]
+if [ ! -e /srv/git/scripts/disable-cia ]
     then
     newhead=$3
     for merged in $(git rev-list --no-merges $newhead $_oldhead | tac); do
