@@ -31,6 +31,9 @@ root-title=Student Robotics Git Repository Browser
 # Set a subheading for the repository index page
 root-desc=
 
+# Set the number of repos to list per page
+max-repo-count=1000
+
 header=/srv/git/scripts/conf/cgit-header
 
 # Include some more info about this site on the index page
