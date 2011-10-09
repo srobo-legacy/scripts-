@@ -6,7 +6,7 @@ NUM_POSTS = 100
 RSS_PATH = "/srv/git/commits.rss"
 
 # Ignore repositories with paths beginning like this: 
-IGNORE = [ "/srv/git/mirrors/", "/srv/git/scripts/" ]
+IGNORE = [ "/srv/git/mirrors/", "/srv/git/scripts/", "/srv/git/priv/" ]
 
 DEBUG = len(sys.argv) > 1
 if DEBUG:
