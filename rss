@@ -153,14 +153,4 @@ rss = pyrss.RSS2(
     lastBuildDate = datetime.datetime.now(),
     items = items )
 
-tmpfd, tmp = tempfile.mkstemp()
-tmpf = os.fdopen( tmpfd, "w" )
-rss.write_xml( tmpf )
-
-os.fchmod(tmpfd, stat.S_IRUSR | stat.S_IRGRP | stat.S_IROTH)
-
-tmpf.close()
-
-os.rename( tmp, RSS_PATH )
-
-
+rss.write_xml( open(RSS_PATH, "w") )
