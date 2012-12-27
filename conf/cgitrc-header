@@ -23,7 +23,7 @@ enable-log-linecount=1
 #favicon=/favicon.ico
 
 # Use a custom logo
-logo=http://www.studentrobotics.org/git/srgit.png
+logo=/git/srgit.png
 
 # Set the title and heading of the repository index page
 root-title=Student Robotics Git Repository Browser
