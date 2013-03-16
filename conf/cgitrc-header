@@ -43,6 +43,20 @@ header=/srv/git/scripts/conf/cgit-header
 #snapshots=tar.gz tar.bz2 zip
 
 ##
+## List of common mimetypes
+## Used for serving the 'plain' versions of files
+##
+
+mimetype.gif=image/gif
+mimetype.htm=text/html
+mimetype.html=text/html
+mimetype.jpg=image/jpeg
+mimetype.jpeg=image/jpeg
+mimetype.pdf=application/pdf
+mimetype.png=image/png
+mimetype.svg=image/svg+xml
+
+##
 ## List of repositories.
 ## PS: Any repositories listed when repo.group is unset will not be
 ##     displayed under a group heading
