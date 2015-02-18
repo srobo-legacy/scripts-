@@ -40,7 +40,7 @@ header=/srv/git/scripts/conf/cgit-header
 #root-readme=/var/www/html/about.html
 
 # Allow download of tar.gz, tar.bz2 and zip-files
-#snapshots=tar.gz tar.bz2 zip
+snapshots=tar.gz tar.bz2 zip
 
 ##
 ## List of common mimetypes
