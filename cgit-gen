@@ -57,18 +57,3 @@ do
 
     echo
 done
-
-
-# Iterate over all home directories looking for git repos in public_git
-for U in $(ls /home)
-do
-    NAMES=$(ls /home/$U/public_git 2> /dev/null)
-    if [[ ! -z $NAMES ]]; then
-	echo "repo.group=$U's repositories"
-
-        for N in $NAMES
-        do
-            printuserrepo $N $U
-        done
-    fi
-done
