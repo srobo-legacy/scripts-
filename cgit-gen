@@ -8,15 +8,6 @@ function printrepo () {
     echo
 }
 
-function printuserrepo () {
-    REPOPATH="/home/$2/public_git/$1"
-    echo "repo.url=$2/$1"
-    echo "repo.path=$REPOPATH"
-    echo "repo.desc=$(cat $REPOPATH/description 2> /dev/null)"
-    echo "repo.clone-url=git://srobo.org/~$2/$1"
-    echo
-}
-
 cat $BASE/scripts/conf/cgitrc-header
 
 cd $BASE
@@ -56,19 +47,4 @@ do
     done
 
     echo
-done
-
-
-# Iterate over all home directories looking for git repos in public_git
-for U in $(ls /home)
-do
-    NAMES=$(ls /home/$U/public_git 2> /dev/null)
-    if [[ ! -z $NAMES ]]; then
-	echo "repo.group=$U's repositories"
-
-        for N in $NAMES
-        do
-            printuserrepo $N $U
-        done
-    fi
 done
