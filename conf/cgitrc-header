@@ -26,10 +26,10 @@ enable-log-linecount=1
 logo=/git/srgit.png
 
 # Set the title and heading of the repository index page
-root-title=Student Robotics Git Repository Browser
+root-title=Student Robotics Legacy Git Repository Browser
 
 # Set a subheading for the repository index page
-root-desc=
+root-desc=Legacy hosting of Student Robotics' git repos. Development has moved to https://github.com/srobo/.
 
 # Set the number of repos to list per page
 max-repo-count=1000
